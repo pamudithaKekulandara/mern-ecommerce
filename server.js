@@ -15,6 +15,8 @@ const productRoutes = require('./routes/product')
 const braintreeRoutes = require('./routes/braintree')
 const orderRoutes = require('./routes/order')
 const { corsMiddleware } = require('./middleware/cors')
+const { default: helmet } = require('helmet')
+const passport = require('passport')
 
 // app
 const app = express()
@@ -39,6 +41,15 @@ connectDB()
 
 // middlewares
 app.use(corsMiddleware)
+app.use(passport.initialize())
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      frameAncestors: ["'none''"],
+    },
+  })
+)
+
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cookieParser())
