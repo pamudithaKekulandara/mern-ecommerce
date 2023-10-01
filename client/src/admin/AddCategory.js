@@ -14,7 +14,18 @@ const AddCategory = () => {
 
   const handleChange = (e) => {
     setError('');
-    setName(e.target.value);
+    if (/^[a-zA-Z0-9]*$/.test(e.target.value)) {
+      // Limit the input to a maximum length (e.g., 50 characters)
+      if (e.target.value.length <= 50) {
+        // setName(value)
+        setName(e.target.value)
+        setError('') // Clear any previous validation errors
+      } else {
+        setError('Category must be at most 50 characters')
+      }
+    } else {
+      setError('Category must contain only letters and numbers')
+    }
   };
 
   const clickSubmit = (e) => {
@@ -36,6 +47,7 @@ const AddCategory = () => {
     <form onSubmit={clickSubmit}>
       <div className='form-group'>
         <label className='text-muted'>Name</label>
+         <div className='form-group'>
         <input
           type='text'
           className='form-control'
@@ -44,6 +56,7 @@ const AddCategory = () => {
           autoFocus
           required
         />
+        </div>
       </div>
       <button className='btn btn-outline-primary'>Create Category</button>
     </form>
