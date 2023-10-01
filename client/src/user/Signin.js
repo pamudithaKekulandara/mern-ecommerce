@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
-import Layout from '../core/Layout';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import React, { useState } from 'react'
+import { Redirect, Link } from 'react-router-dom'
+import Layout from '../core/Layout'
+import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import TextField from '@material-ui/core/TextField'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
+import Grid from '@material-ui/core/Grid'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
 
-import Copyright from '../core/Copyright';
-import { signin, authenticate, isAuthenticated } from '../auth';
+import Copyright from '../core/Copyright'
+import { signin, authenticate, isAuthenticated } from '../auth'
+import SignupProvider from '../components/SignUpProvider'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,9 +33,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(1, 0, 2),
   },
-}));
+}))
 
 export default function Signin() {
   const [values, setValues] = useState({
@@ -44,31 +44,31 @@ export default function Signin() {
     error: '',
     loading: false,
     redirectToReferrer: false,
-  });
+  })
 
-  const { email, password, loading, error, redirectToReferrer } = values;
-  const { user } = isAuthenticated();
+  const { email, password, loading, error, redirectToReferrer } = values
+  const { user } = isAuthenticated()
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, error: false, [name]: event.target.value });
-  };
+    setValues({ ...values, error: false, [name]: event.target.value })
+  }
 
   const clickSubmit = (event) => {
-    event.preventDefault(); // so that browser does not reload
-    setValues({ ...values, error: false, loading: true });
+    event.preventDefault() // so that browser does not reload
+    setValues({ ...values, error: false, loading: true })
     signin({ email, password }).then((data) => {
       if (data.error) {
-        setValues({ ...values, error: data.error, loading: false });
+        setValues({ ...values, error: data.error, loading: false })
       } else {
         authenticate(data, () => {
           setValues({
             ...values,
             redirectToReferrer: true,
-          });
-        });
+          })
+        })
       }
-    });
-  };
+    })
+  }
 
   const showError = () => (
     <div
@@ -77,29 +77,29 @@ export default function Signin() {
     >
       {error}
     </div>
-  );
+  )
 
   const showLoading = () =>
     loading && (
       <div className='alert alert-info'>
         <h2>Loading...</h2>
       </div>
-    );
+    )
 
   const redirectUser = () => {
     if (redirectToReferrer) {
       if (user && user.role === 1) {
-        return <Redirect to='/admin/dashboard' />;
+        return <Redirect to='/admin/dashboard' />
       } else {
-        return <Redirect to='/user/dashboard' />;
+        return <Redirect to='/user/dashboard' />
       }
     }
     if (isAuthenticated()) {
-      return <Redirect to='/' />;
+      return <Redirect to='/' />
     }
-  };
+  }
 
-  const classes = useStyles();
+  const classes = useStyles()
 
   const signInForm = () => (
     <Container component='main' maxWidth='xs'>
@@ -139,7 +139,6 @@ export default function Signin() {
             type='password'
             id='password'
             onChange={handleChange('password')}
-            type='password'
             value={password}
             autoComplete='current-password'
           />
@@ -147,6 +146,7 @@ export default function Signin() {
             control={<Checkbox value='remember' color='primary' />}
             label='Remember me'
           />
+          <SignupProvider />
           <Button
             onClick={clickSubmit}
             type='submit'
@@ -172,7 +172,7 @@ export default function Signin() {
         </form>
       </div>
     </Container>
-  );
+  )
 
   return (
     <Layout
@@ -183,5 +183,5 @@ export default function Signin() {
       {signInForm()}
       <Copyright />
     </Layout>
-  );
+  )
 }

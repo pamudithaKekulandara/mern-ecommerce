@@ -53,13 +53,6 @@ app.use('/api', categoryRoutes)
 app.use('/api', productRoutes)
 app.use('/api', braintreeRoutes)
 app.use('/api', orderRoutes)
-// app.use((req, res, next) => {
-//   res.setHeader(
-//     'Content-Security-Policy',
-//     "default-src 'self' http://localhost:3000 http://localhost:5000"
-//   )
-//   next()
-// })
 
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production') {

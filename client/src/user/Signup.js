@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import TextField from '@material-ui/core/TextField'
 // import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
 
-import Copyright from '../core/Copyright';
+import Copyright from '../core/Copyright'
 
-import Layout from '../core/Layout';
-import { signup } from '../auth';
+import Layout from '../core/Layout'
+import { signup } from '../auth'
+import SignupProvider from '../components/SignUpProvider'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,9 +33,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(1, 0, 2),
   },
-}));
+}))
 
 export default function Signup() {
   const [values, setValues] = useState({
@@ -46,20 +44,20 @@ export default function Signup() {
     password: '',
     error: '',
     success: false,
-  });
+  })
 
-  const { name, email, password, success, error } = values;
+  const { name, email, password, success, error } = values
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, error: false, [name]: event.target.value });
-  };
+    setValues({ ...values, error: false, [name]: event.target.value })
+  }
 
   const clickSubmit = (event) => {
-    event.preventDefault(); // so that browser does not reload
-    setValues({ ...values, error: false });
+    event.preventDefault() // so that browser does not reload
+    setValues({ ...values, error: false })
     signup({ name, email, password }).then((data) => {
       if (data.error) {
-        setValues({ ...values, error: data.error, success: false });
+        setValues({ ...values, error: data.error, success: false })
       } else {
         setValues({
           ...values,
@@ -68,10 +66,10 @@ export default function Signup() {
           password: '',
           error: '',
           success: true,
-        });
+        })
       }
-    }); // sending js object
-  };
+    }) // sending js object
+  }
 
   const showError = () => (
     <div
@@ -80,7 +78,7 @@ export default function Signup() {
     >
       {error}
     </div>
-  );
+  )
 
   const showSuccess = () => (
     <div
@@ -89,9 +87,9 @@ export default function Signup() {
     >
       New account is created. Please <Link to='/signin'>Signin</Link>.
     </div>
-  );
+  )
 
-  const classes = useStyles();
+  const classes = useStyles()
 
   const signUpForm = () => (
     <Container component='main' maxWidth='xs'>
@@ -146,12 +144,12 @@ export default function Signup() {
                 type='password'
                 id='password'
                 onChange={handleChange('password')}
-                type='password'
                 value={password}
                 autoComplete='current-password'
               />
             </Grid>
           </Grid>
+          <SignupProvider />
           <Button
             type='submit'
             fullWidth
@@ -172,7 +170,7 @@ export default function Signup() {
         </form>
       </div>
     </Container>
-  );
+  )
 
   return (
     <Layout
@@ -183,5 +181,5 @@ export default function Signup() {
       {signUpForm()}
       <Copyright />
     </Layout>
-  );
+  )
 }
