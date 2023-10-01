@@ -39,16 +39,15 @@ const connectDB = async () => {
 connectDB()
 
 // middlewares
-const csrfProtection = csurf({
-  cookie: true,
-})
+// const csrfProtection = csurf({
+//   cookie: true,
+// })
 app.use(corsMiddleware)
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(expressValidator())
 app.use(express.urlencoded({ extended: true }))
-app.use(csrfProtection)
 // app.use(cors());
 
 // routes middleware
@@ -59,6 +58,16 @@ app.use('/api', categoryRoutes)
 app.use('/api', productRoutes)
 app.use('/api', braintreeRoutes)
 app.use('/api', orderRoutes)
+
+// app.use(csrfProtection)
+app.use(function (err, req, res, next) {
+  console.log(err)
+  console.log(req)
+  console.log(res)
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+  // Handle CSRF token errors
+  res.status(403).json({ msg: 'CSRF protected!' })
+})
 
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production') {

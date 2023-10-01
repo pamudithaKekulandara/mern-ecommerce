@@ -16,7 +16,7 @@ const clientUrl = process.env.CLIENT_URL
 router.post('/signup', userSignupValidator, signup)
 router.post('/signin', signin)
 router.get('/signout', signout)
-router.get('/CSRFToken', CSRFToken)
+router.get('/getCSRFToken', CSRFToken)
 
 router.get(
   '/auth/google',

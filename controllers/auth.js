@@ -2,6 +2,7 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken') // to generate signed token
 const expressJwt = require('express-jwt') // for auth check
 const { errorHandler } = require('../helpers/dbErrorHandler')
+const { generateToken } = require('../middleware/validation')
 
 require('dotenv').config()
 
@@ -78,6 +79,9 @@ exports.isAdmin = (req, res, next) => {
   next()
 }
 
-exports.CSRFToken = (req, res, next) => {
-  res.json({ CSRFToken: req.CSRFToken })
+exports.CSRFToken = (req, res) => {
+  // console.log(res)
+  const CSRFToken = generateToken(res)
+  console.log(CSRFToken)
+  res.status(200).json({ CSRFToken })
 }

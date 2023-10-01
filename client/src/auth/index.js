@@ -1,4 +1,6 @@
+import { getCookie, setCookie } from '../common/common'
 import { API } from '../config'
+import axios from 'axios'
 
 export const signup = (user) => {
   // console.log(name, email, password);
@@ -48,7 +50,7 @@ export const signout = (next) => {
     localStorage.removeItem('jwt')
     next()
     return fetch(`${API}/signout`, {
-      method: 'GET'
+      method: 'GET',
     })
       .then((response) => {
         console.log('signout', response)
@@ -66,4 +68,32 @@ export const isAuthenticated = () => {
   } else {
     return false
   }
+}
+
+export const getcsrftoken = async (token) => {
+  const csrfToken = getCookie('_csrf')
+  // const response = await fetch(`${API}/getCSRFToken`, {
+  //   method: 'GET',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //     Authorization: `Bearer ${token}`,
+  //     'CSRF-Token': csrfToken,
+  //     'X-CSRF-Token': csrfToken,
+  //     'x-csrf-token': csrfToken,
+  //   },
+  // })
+  const response = await axios.get(`${API}/getCSRFToken`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      'CSRF-Token': csrfToken,
+      'X-CSRF-Token': csrfToken,
+    },
+  })
+  axios.defaults.headers.post['X-CSRF-Token'] = response.data.CSRFToken
+  // console.log(response)
+  setCookie('_csrf', response.data.CSRFToken)
+  return response.data
 }

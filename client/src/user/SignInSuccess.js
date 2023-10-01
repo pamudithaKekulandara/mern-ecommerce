@@ -20,7 +20,6 @@ function SignInSuccess() {
   }, [])
 
   const redirectUser = (role) => {
-    console.log(role)
     if (role === 1) {
       history.push('/admin/dashboard')
     } else {
