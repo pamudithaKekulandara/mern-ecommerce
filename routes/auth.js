@@ -8,6 +8,7 @@ const {
   signin,
   signout,
   requireSignin,
+  CSRFToken,
 } = require('../controllers/auth')
 const { userSignupValidator } = require('../validator')
 const clientUrl = process.env.CLIENT_URL
@@ -15,6 +16,7 @@ const clientUrl = process.env.CLIENT_URL
 router.post('/signup', userSignupValidator, signup)
 router.post('/signin', signin)
 router.get('/signout', signout)
+router.get('/CSRFToken', CSRFToken)
 
 router.get(
   '/auth/google',

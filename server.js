@@ -15,6 +15,7 @@ const productRoutes = require('./routes/product')
 const braintreeRoutes = require('./routes/braintree')
 const orderRoutes = require('./routes/order')
 const { corsMiddleware } = require('./middleware/cors')
+const csurf = require('csurf')
 
 // app
 const app = express()
@@ -38,12 +39,16 @@ const connectDB = async () => {
 connectDB()
 
 // middlewares
+const csrfProtection = csurf({
+  cookie: true,
+})
 app.use(corsMiddleware)
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(expressValidator())
 app.use(express.urlencoded({ extended: true }))
+app.use(csrfProtection)
 // app.use(cors());
 
 // routes middleware
