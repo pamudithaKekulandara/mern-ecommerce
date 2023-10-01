@@ -52,6 +52,7 @@ app.use(csrfProtection)
 // app.use(cors());
 
 // routes middleware
+require('./services/passport')(app)
 app.use('/api', authRoutes)
 app.use('/api', userRoutes)
 app.use('/api', categoryRoutes)
