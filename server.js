@@ -14,12 +14,22 @@ const productRoutes = require('./routes/product')
 const braintreeRoutes = require('./routes/braintree')
 const orderRoutes = require('./routes/order')
 const { corsMiddleware } = require('./middleware/cors')
+const { default: helmet } = require('helmet')
+const passport = require('passport')
+const { config } = require('./config/config')
 
 const app = express()
 
+// Middleware to set X-Content-Type-Options header
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next();
+});
+
+// db connection
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(config.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
@@ -34,12 +44,27 @@ const connectDB = async () => {
 connectDB()
 
 app.use(corsMiddleware)
+app.use(passport.initialize())
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      frameAncestors: ["'none''"],
+    },
+  })
+)
+
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(expressValidator())
 app.use(express.urlencoded({ extended: true }))
+app.disable('x-powered-by');
 
+// app.use(cors());
+
+// routes middleware
+require('./services/passport')(app)
 app.use('/api', authRoutes)
 app.use('/api', userRoutes)
 app.use('/api', categoryRoutes)
@@ -55,7 +80,7 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-const PORT = process.env.PORT || 5000
+const PORT = config.PORT || 5000
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)

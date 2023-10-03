@@ -10,7 +10,8 @@ const {
   requireSignin,
 } = require('../controllers/auth')
 const { userSignupValidator } = require('../validator')
-const clientUrl = process.env.CLIENT_URL
+const { config } = require('../config/config')
+const clientUrl = config.CLIENT_URL
 
 router.post('/signup', userSignupValidator, signup)
 router.post('/signin', signin)
@@ -37,7 +38,9 @@ router.get(
       _id: req.user._id,
     }
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET)
+    // TODO find another way to send the token to frontend
+    const token = jwt.sign(payload, config.JWT_SECRET)
+    // const jwtToken = `Bearer ${token}`
     res.cookie('t', token, { expire: new Date() + 9999 })
     const { _id, name, email, role } = req.user
     res.redirect(
