@@ -15,6 +15,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     instance: {},
     address: '',
   })
+  const [error, setError] = useState('')
 
   const userId = isAuthenticated() && isAuthenticated().user._id
   const token = isAuthenticated() && isAuthenticated().token
@@ -36,8 +37,17 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     getToken(userId, token)
   }, [])
 
-  const handleAddress = (event) => {
-    setData({ ...data, address: event.target.value })
+  const handleAddress = (e) => {
+    const inputValue = e.target.value
+    const sanitizedAddress = inputValue.replace(/[^a-zA-Z0-9,]/g, '')
+
+    if (inputValue !== sanitizedAddress) {
+      setError('Only letters, numbers, and commas are allowed.')
+    } else {
+      setError('')
+    }
+
+    setData({ ...data, address: e.target.value })
   }
 
   const getTotal = () => {
@@ -134,6 +144,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
               value={data.address}
               placeholder='Type your delivery address here...'
             />
+            {error && <div className='text-danger'>{error}</div>}
           </div>
 
           <DropIn
