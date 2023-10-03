@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Layout from '../core/Layout';
-import { isAuthenticated } from '../auth';
-import { Link, Redirect } from 'react-router-dom';
-import { getProduct, getCategories, updateProduct } from './apiAdmin';
+import React, { useState, useEffect } from 'react'
+import Layout from '../core/Layout'
+import { isAuthenticated } from '../auth'
+import { Link, Redirect } from 'react-router-dom'
+import { getProduct, getCategories, updateProduct } from './apiAdmin'
 
 const UpdateProduct = ({ match }) => {
   const [values, setValues] = useState({
@@ -19,10 +19,11 @@ const UpdateProduct = ({ match }) => {
     createdProduct: '',
     redirectToProfile: false,
     formData: '',
-  });
-  const [categories, setCategories] = useState([]);
+  })
+  const [categories, setCategories] = useState([])
+  const [errors, setErrors] = useState({})
 
-  const { user, token } = isAuthenticated();
+  const { user, token } = isAuthenticated()
   const {
     name,
     description,
@@ -36,12 +37,12 @@ const UpdateProduct = ({ match }) => {
     createdProduct,
     redirectToProfile,
     formData,
-  } = values;
+  } = values
 
   const init = (productId) => {
     getProduct(productId).then((data) => {
       if (data.error) {
-        setValues({ ...values, error: data.error });
+        setValues({ ...values, error: data.error })
       } else {
         // populate the state
         setValues({
@@ -53,42 +54,69 @@ const UpdateProduct = ({ match }) => {
           shipping: data.shipping,
           quantity: data.quantity,
           formData: new FormData(),
-        });
+        })
         // load categories
-        initCategories();
+        initCategories()
       }
-    });
-  };
+    })
+  }
 
+    const validateForm = () => {
+      const errors = {}
+
+      // Name validation
+      if (!name.match(/^[A-Za-z0-9\s]+$/)) {
+        errors.name = 'Name should contain letters and numbers only.'
+      }
+
+      // Description validation
+      const MAX_DESCRIPTION_LENGTH = 200
+      if (description.length > MAX_DESCRIPTION_LENGTH) {
+        errors.description = `Description should not exceed ${MAX_DESCRIPTION_LENGTH} characters.`
+      }
+
+      // Price validation
+      if (price < 1 && price > 1000000) {
+        errors.price = 'Price should be a valid number.'
+      }
+
+      // Quantity validation
+      if (quantity < 1 && quantity > 1000000) {
+        errors.quantity = 'Quantity should be a valid number.'
+      }
+      setErrors({ ...errors, [name]: error })
+      return errors
+  }
+  
   // load categories and set form data
   const initCategories = () => {
     getCategories().then((data) => {
       if (data.error) {
-        setValues({ ...values, error: data.error });
+        setValues({ ...values, error: data.error })
       } else {
-        setCategories(data);
+        setCategories(data)
       }
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    init(match.params.productId);
-  }, []);
+    init(match.params.productId)
+  }, [])
 
   const handleChange = (name) => (event) => {
-    const value = name === 'photo' ? event.target.files[0] : event.target.value;
-    formData.set(name, value);
-    setValues({ ...values, [name]: value });
-  };
+    const value = name === 'photo' ? event.target.files[0] : event.target.value
+    formData.set(name, value)
+    setValues({ ...values, [name]: value })
+  }
 
   const clickSubmit = (event) => {
-    event.preventDefault();
-    setValues({ ...values, error: '', loading: true });
+    event.preventDefault()
+    setValues({ ...values, error: '', loading: true })
 
     updateProduct(match.params.productId, user._id, token, formData).then(
       (data) => {
         if (data.error) {
-          setValues({ ...values, error: data.error });
+          setValues({ ...values, error: data.error })
         } else {
           setValues({
             ...values,
@@ -101,11 +129,11 @@ const UpdateProduct = ({ match }) => {
             error: false,
             redirectToProfile: true,
             createdProduct: data.name,
-          });
+          })
         }
       }
-    );
-  };
+    )
+  }
 
   const newPostForm = () => (
     <form className='mb-3' onSubmit={clickSubmit}>
@@ -129,6 +157,7 @@ const UpdateProduct = ({ match }) => {
           className='form-control'
           value={name}
         />
+        {errors.name && <div className='text-danger'>{errors.name}</div>}
       </div>
 
       <div className='form-group'>
@@ -138,6 +167,9 @@ const UpdateProduct = ({ match }) => {
           className='form-control'
           value={description}
         />
+        {errors.description && (
+          <div className='text-danger'>{errors.description}</div>
+        )}
       </div>
 
       <div className='form-group'>
@@ -148,6 +180,7 @@ const UpdateProduct = ({ match }) => {
           className='form-control'
           value={price}
         />
+        {errors.price && <div className='text-danger'>{errors.price}</div>}
       </div>
 
       <div className='form-group'>
@@ -180,11 +213,14 @@ const UpdateProduct = ({ match }) => {
           className='form-control'
           value={quantity}
         />
+        {errors.quantity && (
+          <div className='text-danger'>{errors.quantity}</div>
+        )}  
       </div>
 
       <button className='btn btn-outline-primary'>Update Product</button>
     </form>
-  );
+  )
 
   const showError = () => (
     <div
@@ -193,7 +229,7 @@ const UpdateProduct = ({ match }) => {
     >
       {error}
     </div>
-  );
+  )
 
   const showSuccess = () => (
     <div
@@ -202,22 +238,22 @@ const UpdateProduct = ({ match }) => {
     >
       <h2>{`${createdProduct}`} is updated!</h2>
     </div>
-  );
+  )
 
   const showLoading = () =>
     loading && (
       <div className='alert alert-success'>
         <h2>Loading...</h2>
       </div>
-    );
+    )
 
   const redirectUser = () => {
     if (redirectToProfile) {
       if (!error) {
-        return <Redirect to='/' />;
+        return <Redirect to='/' />
       }
     }
-  };
+  }
 
   return (
     <Layout
@@ -234,7 +270,7 @@ const UpdateProduct = ({ match }) => {
         </div>
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default UpdateProduct;
+export default UpdateProduct
