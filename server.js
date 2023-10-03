@@ -17,6 +17,7 @@ const orderRoutes = require('./routes/order')
 const { corsMiddleware } = require('./middleware/cors')
 const { default: helmet } = require('helmet')
 const passport = require('passport')
+const { config } = require('./config/config')
 
 // app
 const app = express()
@@ -24,7 +25,7 @@ const app = express()
 // db connection
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(config.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
@@ -45,6 +46,7 @@ app.use(passport.initialize())
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
+      defaultSrc: ["'self'"],
       frameAncestors: ["'none''"],
     },
   })
@@ -76,7 +78,7 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-const PORT = process.env.PORT || 5000
+const PORT = config.PORT || 5000
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
