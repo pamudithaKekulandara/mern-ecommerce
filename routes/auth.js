@@ -37,16 +37,12 @@ router.get(
       _id: req.user._id,
     }
 
-    // TODO find another way to send the token to frontend
     const token = jwt.sign(payload, process.env.JWT_SECRET)
-    // const jwtToken = `Bearer ${token}`
     res.cookie('t', token, { expire: new Date() + 9999 })
-    // return response with user and token to frontend client
     const { _id, name, email, role } = req.user
     res.redirect(
       `${clientUrl}/auth/success?token=${token}&id=${_id}&role=${role}&name=${name}&email=${email}`
     )
-    // res.json({ token, user: { _id, email, name, role } })
   }
 )
 

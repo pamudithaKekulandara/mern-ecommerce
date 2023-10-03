@@ -7,7 +7,7 @@ const corsMiddleware = (req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type')
     res.status(200).end()
   } else {
-    next() // Continue with the main request
+    next() 
   }
 }
 
