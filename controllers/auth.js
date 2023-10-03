@@ -2,6 +2,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken'); // to generate signed token
 const expressJwt = require('express-jwt'); // for auth check
 const { errorHandler } = require('../helpers/dbErrorHandler');
+const { config } = require('../config/config');
 
 require('dotenv').config();
 
@@ -41,7 +42,7 @@ exports.signin = (req, res) => {
     // generate a signed token with user id and secret
     const token = jwt.sign(
       { _id: user._id },
-      process.env.JWT_SECRET
+      config.JWT_SECRET
     );
     // persist the token as 't' in cookie with expiry date
     res.cookie('t', token, { expire: new Date() + 9999 });
@@ -57,7 +58,7 @@ exports.signout = (req, res) => {
 };
 
 exports.requireSignin = expressJwt({
-  secret: process.env.JWT_SECRET,
+  secret: config.JWT_SECRET,
   // algorithms: ['RS256'],
   userProperty: 'auth',
 });
