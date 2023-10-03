@@ -22,6 +22,12 @@ const { config } = require('./config/config')
 // app
 const app = express()
 
+// Middleware to set X-Content-Type-Options header
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next();
+});
+
 // db connection
 const connectDB = async () => {
   try {
@@ -57,6 +63,8 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(expressValidator())
 app.use(express.urlencoded({ extended: true }))
+app.disable('x-powered-by');
+
 // app.use(cors());
 
 // routes middleware
