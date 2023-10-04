@@ -7,7 +7,6 @@ const cors = require('cors')
 const path = require('path')
 const expressValidator = require('express-validator')
 require('dotenv').config()
-// import routes
 const authRoutes = require('./routes/auth')
 const userRoutes = require('./routes/user')
 const categoryRoutes = require('./routes/category')
@@ -19,14 +18,7 @@ const { default: helmet } = require('helmet')
 const passport = require('passport')
 const { config } = require('./config/config')
 
-// app
 const app = express()
-
-// Middleware to set X-Content-Type-Options header
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  next();
-});
 
 // db connection
 const connectDB = async () => {
@@ -40,13 +32,11 @@ const connectDB = async () => {
     console.log('MongoDB Connected')
   } catch (err) {
     console.error(err.message)
-    // exit process with failure
     process.exit(1)
   }
 }
 connectDB()
 
-// middlewares
 app.use(corsMiddleware)
 app.use(passport.initialize())
 app.use(
@@ -63,9 +53,7 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(expressValidator())
 app.use(express.urlencoded({ extended: true }))
-app.disable('x-powered-by');
-
-// app.use(cors());
+app.disable('x-powered-by')
 
 // routes middleware
 require('./services/passport')(app)
@@ -76,9 +64,7 @@ app.use('/api', productRoutes)
 app.use('/api', braintreeRoutes)
 app.use('/api', orderRoutes)
 
-// Server static assets if in production
 if (process.env.NODE_ENV === 'production') {
-  // Set static folder
   app.use(express.static('client/build'))
 
   app.get('*', (req, res) => {

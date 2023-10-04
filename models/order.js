@@ -29,7 +29,7 @@ const OrderSchema = new mongoose.Schema(
         'Shipped',
         'Delivered',
         'Cancelled',
-      ], // enum means string objects
+      ], 
     },
     updated: Date,
     user: { type: ObjectId, ref: 'User' },
