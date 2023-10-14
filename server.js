@@ -48,7 +48,7 @@ app.use(
   })
 )
 
-app.use(morgan('dev'))
+// app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(expressValidator())
