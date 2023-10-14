@@ -70,7 +70,7 @@ const AddCategory = () => {
 
   const showError = () => {
     if (error) {
-      return <h3 className='text-danger'>Category should be unique</h3>;
+      return <h3 className='text-danger'>{error}</h3>;
     }
   };
 

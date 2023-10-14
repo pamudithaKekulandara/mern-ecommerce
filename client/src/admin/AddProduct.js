@@ -21,7 +21,7 @@ const AddProduct = () => {
   })
 
   const { user, token } = isAuthenticated()
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({})
   const {
     name,
     description,
@@ -55,28 +55,30 @@ const AddProduct = () => {
 
   const validateForm = () => {
     const errors = {}
-
+    const MAX_DESCRIPTION_LENGTH = 200
     // Name validation
     if (!name.match(/^[A-Za-z0-9\s]+$/)) {
       errors.name = 'Name should contain letters and numbers only.'
     }
 
     // Description validation
-    const MAX_DESCRIPTION_LENGTH = 200
-    if (description.length > MAX_DESCRIPTION_LENGTH ) {
-      errors.description = `Description should not exceed ${MAX_DESCRIPTION_LENGTH} characters.`
+    if (
+      description.length > MAX_DESCRIPTION_LENGTH ||
+      !description.match(/^[A-Za-z0-9\s]+$/)
+    ) {
+      errors.description = `Description should not exceed ${MAX_DESCRIPTION_LENGTH} characters and should contain letters and numbers only.`
     }
 
     // Price validation
-    if (price<1 && price>1000000) {
+    if (price < 1 || price > 1000000) {
       errors.price = 'Price should be a valid number.'
     }
 
     // Quantity validation
-    if (quantity<1 && quantity>1000000) {
+     if (quantity > 1 || quantity < 100000) {
       errors.quantity = 'Quantity should be a valid number.'
     }
-    setErrors({ ...errors, [name]: error });
+    setErrors({ ...errors, [name]: error })
     return errors
   }
 
@@ -84,7 +86,6 @@ const AddProduct = () => {
     const value = name === 'photo' ? event.target.files[0] : event.target.value
     formData.set(name, value)
     setValues({ ...values, [name]: value })
-   
   }
 
   const clickSubmit = (event) => {
@@ -96,20 +97,17 @@ const AddProduct = () => {
       const errors = validateForm()
       if (Object.keys(errors).length === 0) {
         // Proceed with form submission
-           setValues({
-             ...values,
-             name: '',
-             description: '',
-             photo: '',
-             price: '',
-             quantity: '',
-             loading: false,
-             createdProduct: data.name,
-           })
-      } else {
-        // Display errors to the user
-        console.log(errors)
-      }
+        setValues({
+          ...values,
+          name: name,
+          description: description,
+          photo: '',
+          price: price,
+          quantity: quantity,
+          loading: false,
+          createdProduct: data.name,
+        })
+      } 
     })
   }
 
@@ -232,7 +230,7 @@ const AddProduct = () => {
     >
       <div className='row'>
         <div className='col-md-8 offset-md-2'>
-          {showLoading()}
+          {/* {showLoading()} */}
           {showSuccess()}
           {showError()}
           {newPostForm()}
