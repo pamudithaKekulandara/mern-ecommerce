@@ -75,7 +75,7 @@ const AddProduct = () => {
     }
 
     // Quantity validation
-     if (quantity > 1 || quantity < 100000) {
+    if (quantity > 1 || quantity < 100000) {
       errors.quantity = 'Quantity should be a valid number.'
     }
     setErrors({ ...errors, [name]: error })
@@ -90,13 +90,15 @@ const AddProduct = () => {
 
   const clickSubmit = (event) => {
     event.preventDefault()
-    setValues({ ...values, error: '', loading: true })
+    // setValues({ ...values, error: '', loading: true })
+    const errors = validateForm()
+    if (Object.keys(errors).length > 0) {
+      // Proceed with form submission
+      alert('error please try again!')
+    } else {
+      createProduct(user._id, token, formData).then((data) => {
+        // Check if there are any errors
 
-    createProduct(user._id, token, formData).then((data) => {
-      // Check if there are any errors
-      const errors = validateForm()
-      if (Object.keys(errors).length === 0) {
-        // Proceed with form submission
         setValues({
           ...values,
           name: name,
@@ -107,8 +109,8 @@ const AddProduct = () => {
           loading: false,
           createdProduct: data.name,
         })
-      } 
-    })
+      })
+    }
   }
 
   const newPostForm = () => (
